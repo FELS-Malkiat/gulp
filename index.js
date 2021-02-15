@@ -5,6 +5,7 @@ var Orchestrator = require('orchestrator');
 var gutil = require('gulp-util');
 var deprecated = require('deprecated');
 var vfs = require('vinyl-fs');
+var watch = require('glob-watcher');
 
 function Gulp() {
   Orchestrator.call(this);
@@ -12,7 +13,7 @@ function Gulp() {
 util.inherits(Gulp, Orchestrator);
 
 Gulp.prototype.task = Gulp.prototype.add;
-Gulp.prototype.run = function() {
+Gulp.prototype.run = function () {
   // `run()` is deprecated as of 3.5 and will be removed in 4.0
   // Use task dependencies instead
 
@@ -24,7 +25,7 @@ Gulp.prototype.run = function() {
 
 Gulp.prototype.src = vfs.src;
 Gulp.prototype.dest = vfs.dest;
-Gulp.prototype.watch = function(glob, opt, fn) {
+Gulp.prototype.watch = function (glob, opt, fn) {
   if (typeof opt === 'function' || Array.isArray(opt)) {
     fn = opt;
     opt = null;
@@ -32,12 +33,12 @@ Gulp.prototype.watch = function(glob, opt, fn) {
 
   // Array of tasks given
   if (Array.isArray(fn)) {
-    return vfs.watch(glob, opt, function() {
+    return watch(glob, opt, function () {
       this.start.apply(this, fn);
     }.bind(this));
   }
 
-  return vfs.watch(glob, opt, fn);
+  return watch(glob, opt, fn);
 };
 
 // Let people use this class from our instance
